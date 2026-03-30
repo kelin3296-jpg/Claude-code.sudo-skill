@@ -120,4 +120,6 @@ python3 scripts/build_release.py
 
 The release builder creates `dist/sudo-skill.zip` without `__MACOSX`, tests, or cache files.
 
+Tags like `v0.1.0` trigger `.github/workflows/release.yml` to run tests, build the zip, and publish a GitHub Release.
+
 If you publish this repository under a different GitHub owner or repo name, update the CI badge URL at the top of this file.

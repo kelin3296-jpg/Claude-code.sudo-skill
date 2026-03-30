@@ -118,4 +118,6 @@ python3 scripts/build_release.py
 
 发布脚本会生成 `dist/sudo-skill.zip`，并自动排除 `__MACOSX`、测试文件和缓存目录。
 
+推送 `v0.1.0` 这类 tag 时，`.github/workflows/release.yml` 会自动跑测试、构建 zip，并发布 GitHub Release。
+
 如果你最终把仓库发布到别的 GitHub 用户名或仓库名下，记得同步更新本文件顶部的 CI badge 链接。
