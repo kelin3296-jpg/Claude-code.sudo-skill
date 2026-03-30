@@ -1,0 +1,62 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17172B"/>
+      <stop offset="1" stop-color="#2A2956"/>
+    </linearGradient>
+    <linearGradient id="card" x1="140" y1="120" x2="1040" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#12131F"/>
+      <stop offset="1" stop-color="#191B2E"/>
+    </linearGradient>
+    <filter id="shadow" x="90" y="70" width="1020" height="610" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#070814" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="760" rx="32" fill="url(#bg)"/>
+
+  <text x="120" y="92" fill="#F8FAFF" font-size="38" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="700">sudo-skill</text>
+  <text x="120" y="126" fill="#B7C0FF" font-size="20" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Safer /sudo workflows for Claude Code with backup, diff, audit logs, and guarded rollback.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="120" y="160" width="960" height="540" rx="22" fill="url(#card)" stroke="#353A69" stroke-width="1.5"/>
+  </g>
+
+  <circle cx="158" cy="194" r="7" fill="#FF6B6B"/>
+  <circle cx="182" cy="194" r="7" fill="#FFD166"/>
+  <circle cx="206" cy="194" r="7" fill="#4CD964"/>
+  <text x="234" y="201" fill="#9EA7DA" font-size="18" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">terminal demo</text>
+
+  <rect x="150" y="232" width="610" height="430" rx="16" fill="#0C0D17" stroke="#262A4A"/>
+  <text x="182" y="278" fill="#7CF29A" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">$ python sudo.py enter</text>
+  <text x="182" y="314" fill="#D9E1FF" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">Entered /sudo explicit privileged workflow.</text>
+
+  <text x="182" y="366" fill="#7CF29A" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">$ python sudo.py log-modify ~/.ssh/config</text>
+  <text x="182" y="402" fill="#D9E1FF" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">Recorded modify operation #1 for /Users/you/.ssh/config</text>
+
+  <text x="182" y="454" fill="#7CF29A" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">$ python sudo.py diff ~/.ssh/config</text>
+  <text x="182" y="490" fill="#8AA4FF" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">--- before:/Users/you/.ssh/config</text>
+  <text x="182" y="520" fill="#8AA4FF" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">+++ current:/Users/you/.ssh/config</text>
+  <text x="182" y="550" fill="#FF9AA2" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">-Host old-box</text>
+  <text x="182" y="580" fill="#95F5B5" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">+Host prod-box</text>
+
+  <text x="182" y="632" fill="#7CF29A" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">$ python sudo.py rollback 1 --yes</text>
+  <text x="182" y="668" fill="#D9E1FF" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace">Rolled back modify: /Users/you/.ssh/config</text>
+
+  <rect x="790" y="232" width="250" height="430" rx="18" fill="#11142A" stroke="#262A4A"/>
+  <text x="822" y="278" fill="#F8FAFF" font-size="26" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="700">What it gives you</text>
+
+  <rect x="822" y="308" width="186" height="58" rx="14" fill="#1A2045"/>
+  <text x="846" y="344" fill="#DCE5FF" font-size="20" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Backup before change</text>
+
+  <rect x="822" y="384" width="186" height="58" rx="14" fill="#1A2045"/>
+  <text x="858" y="420" fill="#DCE5FF" font-size="20" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Unified diff view</text>
+
+  <rect x="822" y="460" width="186" height="58" rx="14" fill="#1A2045"/>
+  <text x="841" y="496" fill="#DCE5FF" font-size="20" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Guarded rollback</text>
+
+  <rect x="822" y="536" width="186" height="58" rx="14" fill="#1A2045"/>
+  <text x="847" y="572" fill="#DCE5FF" font-size="20" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Audit trail stays readable</text>
+
+  <text x="120" y="724" fill="#98A2D6" font-size="18" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Open-source repo polish: demo image, contributor guide, issue templates, and release automation.</text>
+</svg>

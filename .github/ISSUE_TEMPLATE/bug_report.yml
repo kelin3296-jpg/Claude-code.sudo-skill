@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a broken behavior, regression, or safety issue in sudo-skill.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please include the smallest reproduction you can.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the bug or regression.
+      placeholder: Rolling back a move refused even though the destination had not changed.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Share the exact commands, files, or workflow.
+      placeholder: |
+        1. Run `python sudo.py log-move from.txt to.txt`
+        2. Run `python sudo.py rollback 1 --yes`
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Claude Code version, Python version, OS, and skill version/tag if known.
+      placeholder: Claude Code ..., Python 3.11, macOS ..., sudo-skill v0.1.1
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste relevant output, diff snippets, or screenshots if helpful.

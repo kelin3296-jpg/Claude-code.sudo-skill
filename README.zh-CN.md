@@ -7,7 +7,9 @@
 
 给 Claude Code 用的更稳妥 `/sudo` 工作流：先备份、再修改；先看 diff、再回滚；对象不一致时拒绝 destructive rollback。
 
-英文说明见 [`README.md`](README.md).
+英文说明见 [`README.md`](README.md)。参与贡献可先看 [`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)。
+
+![sudo-skill 演示图](docs/demo-terminal.svg)
 
 ## 这个项目为什么存在
 
@@ -122,6 +124,13 @@ Rolled back modify: /Users/you/.ssh/config
 $ python sudo.py exit
 Exited /sudo workflow.
 ```
+
+## 参与贡献
+
+- 贡献说明：[`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)
+- Bug 反馈：GitHub issue 模板
+- 功能建议：GitHub issue 模板
+- Pull request：GitHub PR 模板
 
 ## 开发与发布
 

@@ -7,7 +7,9 @@
 
 Safer `/sudo` workflows for Claude Code — backup before change, diff before rollback, and object-aware rollback guards for sensitive file edits.
 
-中文说明见 [`README.zh-CN.md`](README.zh-CN.md).
+中文说明见 [`README.zh-CN.md`](README.zh-CN.md). Want to contribute? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+![sudo-skill demo](docs/demo-terminal.svg)
 
 ## Why this exists
 
@@ -122,6 +124,13 @@ Rolled back modify: /Users/you/.ssh/config
 $ python sudo.py exit
 Exited /sudo workflow.
 ```
+
+## Contributing
+
+- Contributor guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Bug reports: GitHub issue template
+- Feature requests: GitHub issue template
+- Pull requests: GitHub PR template
 
 ## Development
 

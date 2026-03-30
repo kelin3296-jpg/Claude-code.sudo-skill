@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest a new capability, workflow improvement, or contributor-quality enhancement.
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      placeholder: It is hard to understand which rollback entries are still active when the history gets long.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+      placeholder: Add a clearer status marker for active vs rolled-back operations.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and tradeoffs
+      description: Share any constraints, risks, or compatibility concerns you already see.
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra context
+      description: Links, examples, screenshots, or similar tools are all welcome.
