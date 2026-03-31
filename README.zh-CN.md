@@ -128,6 +128,8 @@ Exited /sudo workflow.
 ## 参与贡献
 
 - 贡献说明：[`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)
+- 安全策略：[`SECURITY.md`](SECURITY.md)
+- 支持说明：[`SUPPORT.md`](SUPPORT.md)
 - Bug 反馈：GitHub issue 模板
 - 功能建议：GitHub issue 模板
 - Pull request：GitHub PR 模板

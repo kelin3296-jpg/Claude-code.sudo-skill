@@ -128,6 +128,8 @@ Exited /sudo workflow.
 ## Contributing
 
 - Contributor guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Security policy: [`SECURITY.md`](SECURITY.md)
+- Support guide: [`SUPPORT.md`](SUPPORT.md)
 - Bug reports: GitHub issue template
 - Feature requests: GitHub issue template
 - Pull requests: GitHub PR template
