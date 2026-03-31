@@ -15,6 +15,9 @@ INCLUDE_PATHS = [
     "operation_logger.py",
     "README.md",
     "README.zh-CN.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "SUPPORT.md",
     "LICENSE",
     "references/state-tracking.md",
 ]

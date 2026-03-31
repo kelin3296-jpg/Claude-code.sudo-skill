@@ -5,28 +5,81 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776ab)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-给 Claude Code 用的更稳妥 `/sudo` 工作流：先备份、再修改；先看 diff、再回滚；对象不一致时拒绝 destructive rollback。
+给 Claude Code 用的更稳妥 `/sudo` 工作流：先备份、再修改；先看 diff、再回滚；把特权模式后的后顾之忧，变成一条可追溯、可兜底的回退路径。
 
-英文说明见 [`README.md`](README.md)。参与贡献可先看 [`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)。
+英文说明见 [`README.md`](README.md)。参与贡献可先看 [`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)，版本历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ![sudo-skill 演示图](docs/demo-terminal.svg)
 
-## 这个项目为什么存在
+## 这个项目背后的故事
 
-很多 Claude Code 使用场景确实需要 `/sudo` 这种心智模型，但“自动提权模式”既容易误导，也不安全。`sudo-skill` 的目标是保留熟悉的命令入口，同时把能力边界讲清楚：
+用户真正害怕的，往往不是敲下特权命令本身，而是命令执行之后那种不确定感：
 
-- 进入显式特权工作流，而不是伪装成自动绕过沙箱
-- 在改文件前留备份
-- 在回滚前先看文本 diff
-- 如果当前对象已经变了，就拒绝 destructive rollback
-- 保留回滚后依然读得懂的审计记录
+- “如果这次改坏了，我怎么撤回来？”
+- “如果我动的是敏感路径，出了问题还能不能清楚地恢复？”
+- “用了 `/sudo` 这种心智模型，会不会把后续善后成本都转嫁给自己？”
 
-## 一眼看懂
+`sudo-skill` 就是为了解决这种心理负担。它保留大家熟悉的 `/sudo` 使用习惯，但把它变成一个**显式、可审计、可回滚**的流程：有备份、有日志、有 diff、有对象校验后的安全回滚。
 
-- **运行环境**：仅支持 Claude Code
-- **能力边界**：显式特权工作流，不自动修改宿主沙箱
-- **核心能力**：备份、审计日志、unified diff、安全回滚、可发布 zip
-- **默认存储**：写入 `~/.claude`，也支持 `SUDO_SKILL_HOME` 做隔离环境
+## 它解决的痛点
+
+- 特权修改一旦缺少回退方案，用户会天然紧张
+- shell history 不是可靠的 rollback 方案
+- 敏感文件、系统路径和权限改动，需要“先有兜底，再敢动手”
+- `/sudo` 带来的压力，本质上是“改完以后怎么办”的焦虑
+
+## sudo-skill 能帮你做什么
+
+- **显式特权工作流**：`/sudo` 表示进入受跟踪流程，不是偷偷绕过沙箱
+- **修改前先备份**：真正高风险的改动先留后手
+- **回滚前先看 diff**：先判断，再撤回
+- **安全回滚**：对象不一致时拒绝 destructive rollback
+- **日志和备份兜底**：`~/.claude` 下保留可追查的恢复线索
+
+## 出问题时的兜底方案
+
+如果某次敏感修改让你不放心，兜底方案不是“回忆刚刚改了什么”，而是：
+
+1. 先看 `/sudo diff`
+2. 再查 `/sudo history`
+3. 对最新仍然活跃的变更执行回滚（前提是对象校验仍然匹配）
+4. 必要时去 `~/.claude/sudo-backups/` 和 `~/.claude/sudo-logs/` 做人工排查与恢复
+
+这也是这个 skill 最重要的价值：它让用户在进入特权模式时，不再因为“万一出错怎么办”而有明显后顾之忧。
+
+## 30 秒安装
+
+### 最省事的方式：把这段提示词直接发给 Claude Code
+
+```text
+请帮我从这个 GitHub 仓库安装 `sudo-skill`：
+https://github.com/kelin3296-jpg/sudo-skill
+
+要求：
+1. 下载最新 GitHub Release 里的 `sudo-skill.zip`
+2. 安装到 `~/.claude/skills/sudo`
+3. 如果 `~/.claude/skills/sudo` 已经存在，先备份旧目录，再覆盖安装
+4. 安装完成后运行 `python3 ~/.claude/skills/sudo/sudo.py status`
+5. 最后告诉我 `/sudo`、`/sudo diff`、`/sudo history 5`、`/sudo rollback 1 --yes` 分别怎么用
+6. 如果 Release 资产不可用，就退回到仓库内容安装，并明确告诉我你实际用了哪种安装路径
+```
+
+### 手动安装兜底命令
+
+```bash
+mkdir -p ~/.claude/skills
+curl -L -o /tmp/sudo-skill.zip   https://github.com/kelin3296-jpg/sudo-skill/releases/latest/download/sudo-skill.zip
+
+tmp_dir=$(mktemp -d)
+unzip /tmp/sudo-skill.zip -d "$tmp_dir"
+
+if [ -d ~/.claude/skills/sudo ]; then
+  mv ~/.claude/skills/sudo ~/.claude/skills/sudo.bak.$(date +%Y%m%d%H%M%S)
+fi
+
+mv "$tmp_dir"/sudo-skill ~/.claude/skills/sudo
+python3 ~/.claude/skills/sudo/sudo.py status
+```
 
 ## 快速开始
 
@@ -38,24 +91,6 @@ python sudo.py finalize-modify ~/.ssh/config
 python sudo.py diff ~/.ssh/config
 python sudo.py rollback 1 --yes
 python sudo.py exit
-```
-
-## 安装示例
-
-从本地工作目录安装：
-
-```bash
-mkdir -p ~/.claude/skills
-cp -R ./sudo-skill ~/.claude/skills/sudo
-```
-
-从 release zip 安装：
-
-```bash
-mkdir -p ~/.claude/skills
-unzip dist/sudo-skill.zip -d /tmp/sudo-skill-release
-rm -rf ~/.claude/skills/sudo
-mv /tmp/sudo-skill-release/sudo-skill ~/.claude/skills/sudo
 ```
 
 ## 面向用户的公开命令
@@ -125,9 +160,10 @@ $ python sudo.py exit
 Exited /sudo workflow.
 ```
 
-## 参与贡献
+## 仓库文档入口
 
 - 贡献说明：[`CONTRIBUTING.zh-CN.md`](CONTRIBUTING.zh-CN.md)
+- 版本历史：[`CHANGELOG.md`](CHANGELOG.md)
 - 安全策略：[`SECURITY.md`](SECURITY.md)
 - 支持说明：[`SUPPORT.md`](SUPPORT.md)
 - Bug 反馈：GitHub issue 模板
