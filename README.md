@@ -5,28 +5,80 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776ab)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-Safer `/sudo` workflows for Claude Code — backup before change, diff before rollback, and object-aware rollback guards for sensitive file edits.
+A safer `/sudo` workflow for Claude Code — backup before change, diff before rollback, and a logged fallback path when privileged edits make users nervous.
 
-中文说明见 [`README.zh-CN.md`](README.zh-CN.md). Want to contribute? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
+中文说明见 [`README.zh-CN.md`](README.zh-CN.md). Want to contribute? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md). Release history lives in [`CHANGELOG.md`](CHANGELOG.md).
 
 ![sudo-skill demo](docs/demo-terminal.svg)
 
-## Why this exists
+## The story
 
-Claude Code users often need a lightweight `/sudo` mental model for high-risk edits, but "auto-elevated mode" is both misleading and unsafe. `sudo-skill` keeps the command shape familiar while making the contract explicit:
+The hard part of privileged edits is rarely the command itself. The real stress comes right after it:
 
-- enter an explicit privileged workflow
-- back up files before changing them
-- inspect text diffs before rollback
-- refuse destructive rollback when the tracked file object has changed
-- keep an audit trail that stays understandable after rollback
+- "If this change is wrong, how do I undo it without guessing?"
+- "If I touch a sensitive path, do I still have a clear recovery path?"
+- "If I use a `/sudo`-style workflow, am I creating extra cleanup work for myself later?"
 
-## At a glance
+`sudo-skill` exists to remove that hesitation. It keeps the familiar `/sudo` mental model, but turns it into an explicit, auditable workflow with backups, logs, diff inspection, and guarded rollback.
 
-- **Runtime**: Claude Code only
-- **Scope**: explicit privileged workflow, not automatic sandbox bypass
-- **Core features**: backup, audit log, unified diff, guarded rollback, release zip packaging
-- **Storage**: `~/.claude` by default, or `SUDO_SKILL_HOME` for isolated environments
+## Pain points it solves
+
+- privileged edits feel high-stakes when shell history is the only breadcrumb
+- risky file changes need a rollback story before they need a rollback command
+- users want confidence, not just elevation
+- the emotional cost of `/sudo` is often the fear of being stuck with a bad change
+
+## What sudo-skill gives you
+
+- **Explicit workflow**: `/sudo` means "tracked privileged workflow," not hidden sandbox bypass
+- **Backup before change**: risky edits can be recovered from recorded state
+- **Diff before rollback**: inspect first, revert second
+- **Guarded rollback**: destructive rollback refuses to run when the file object no longer matches
+- **Auditable trail**: backups and logs stay readable under `~/.claude`
+
+## The fallback path when something feels wrong
+
+If a privileged change introduces doubt, the recovery plan is not guesswork:
+
+1. inspect `/sudo diff`
+2. review `/sudo history`
+3. roll back the newest active change when object validation still matches
+4. inspect `~/.claude/sudo-backups/` and `~/.claude/sudo-logs/` if manual recovery is needed
+
+That is the real promise of this skill: it reduces the after-the-fact anxiety around privileged mode because the user knows there is a logged, reversible path out.
+
+## Install in 30 seconds
+
+### Fastest path: paste this into Claude Code
+
+```text
+Please install the GitHub skill from https://github.com/kelin3296-jpg/sudo-skill
+
+Requirements:
+1. Download the latest GitHub Release asset named `sudo-skill.zip`
+2. Install it to `~/.claude/skills/sudo`
+3. If `~/.claude/skills/sudo` already exists, back it up before replacing it
+4. Run `python3 ~/.claude/skills/sudo/sudo.py status` after installation
+5. Then explain how to use `/sudo`, `/sudo diff`, `/sudo history 5`, and `/sudo rollback 1 --yes`
+6. If the release asset is unavailable, fall back to installing from the repository contents and tell me which path you used
+```
+
+### Manual fallback install
+
+```bash
+mkdir -p ~/.claude/skills
+curl -L -o /tmp/sudo-skill.zip   https://github.com/kelin3296-jpg/sudo-skill/releases/latest/download/sudo-skill.zip
+
+tmp_dir=$(mktemp -d)
+unzip /tmp/sudo-skill.zip -d "$tmp_dir"
+
+if [ -d ~/.claude/skills/sudo ]; then
+  mv ~/.claude/skills/sudo ~/.claude/skills/sudo.bak.$(date +%Y%m%d%H%M%S)
+fi
+
+mv "$tmp_dir"/sudo-skill ~/.claude/skills/sudo
+python3 ~/.claude/skills/sudo/sudo.py status
+```
 
 ## Quick start
 
@@ -38,24 +90,6 @@ python sudo.py finalize-modify ~/.ssh/config
 python sudo.py diff ~/.ssh/config
 python sudo.py rollback 1 --yes
 python sudo.py exit
-```
-
-## Install
-
-Install from a local working tree:
-
-```bash
-mkdir -p ~/.claude/skills
-cp -R ./sudo-skill ~/.claude/skills/sudo
-```
-
-Install from the release zip:
-
-```bash
-mkdir -p ~/.claude/skills
-unzip dist/sudo-skill.zip -d /tmp/sudo-skill-release
-rm -rf ~/.claude/skills/sudo
-mv /tmp/sudo-skill-release/sudo-skill ~/.claude/skills/sudo
 ```
 
 ## Public commands
@@ -125,9 +159,10 @@ $ python sudo.py exit
 Exited /sudo workflow.
 ```
 
-## Contributing
+## Project docs
 
 - Contributor guide: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Changelog: [`CHANGELOG.md`](CHANGELOG.md)
 - Security policy: [`SECURITY.md`](SECURITY.md)
 - Support guide: [`SUPPORT.md`](SUPPORT.md)
 - Bug reports: GitHub issue template

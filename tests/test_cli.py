@@ -85,6 +85,9 @@ def test_release_zip_is_clean(cli_env):
         names = archive.namelist()
     assert all("__MACOSX" not in name for name in names)
     assert "sudo-skill/SKILL.md" in names
+    assert "sudo-skill/CHANGELOG.md" in names
+    assert "sudo-skill/SECURITY.md" in names
+    assert "sudo-skill/SUPPORT.md" in names
     assert "sudo-skill/tests/test_cli.py" not in names
 
 

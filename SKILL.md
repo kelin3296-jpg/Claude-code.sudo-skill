@@ -1,13 +1,35 @@
 ---
 name: sudo
-description: Explicit privileged workflow for Claude Code with backup, audit logs, diff, and guarded rollback helpers. Use when the user invokes /sudo, /sudo exit, /sudo history, /sudo rollback, or asks to work on sensitive files or system locations with reversible change tracking. 适用于用户输入 /sudo、/sudo exit、/sudo history、/sudo rollback，或需要以可回滚方式处理敏感文件、系统路径和高风险修改的场景。
+description: Explicit privileged workflow for Claude Code that reduces the anxiety around sensitive file edits by keeping backup, audit logs, diff, and guarded rollback helpers. Use when the user invokes /sudo, /sudo exit, /sudo history, /sudo rollback, or needs a reversible workflow for sensitive files and system paths. 适用于用户输入 /sudo、/sudo exit、/sudo history、/sudo rollback，或需要以可回滚方式处理敏感文件、系统路径和高风险修改的场景。
 ---
 
 # /sudo
 
-Use this skill for **explicit** privileged workflows in Claude Code.
+Use this skill when the user wants a `/sudo`-style workflow for sensitive edits, but also wants a clear undo story.
+
+## Why this skill exists
+
+The stressful part of privileged edits is usually not the command. It is the fear that a risky file change, deletion, move, or permission update will be hard to unwind later. This skill exists to remove that hesitation.
+
+## What problem it solves
+
+- users want a familiar `/sudo` mental model
+- sensitive paths need auditable change tracking
+- shell history alone is not a rollback plan
+- privileged edits feel safer when there is a logged fallback path
+
+## Safety net
+
+If something feels wrong after a risky change, the fallback path is:
+
+1. inspect `/sudo diff`
+2. review `/sudo history`
+3. roll back the newest active change when object validation still matches
+4. inspect `~/.claude/sudo-backups/` and `~/.claude/sudo-logs/` for manual recovery context
 
 This skill does **not** automatically bypass Claude Code sandboxing, and it does **not** automatically modify bash tool parameters. Its job is to track state, backups, diffs, and rollback metadata so that sensitive changes are reversible and auditable.
+
+For installation help and copy-paste installer prompts, see the repository README.
 
 ## Command mapping
 
@@ -51,29 +73,36 @@ This skill does **not** automatically bypass Claude Code sandboxing, and it does
 
 ## Rollback rules
 
-- Roll back only the most recent active operations.
-- Refuse destructive rollback when the current file object no longer matches the recorded snapshot.
-- Treat `/sudo diff` as the first inspection tool before rollbacking risky changes.
-- Still ask for extra confirmation before destructive shell commands such as `rm -rf`, even inside `/sudo`.
+- roll back only the most recent active operations
+- refuse destructive rollback when the current file object no longer matches the recorded snapshot
+- treat `/sudo diff` as the first inspection tool before rollbacking risky changes
+- still ask for extra confirmation before destructive shell commands such as `rm -rf`, even inside `/sudo`
 
 ## 中文说明
 
 这是一个 **显式特权工作流**，不是“自动提权模式”。
 
-它不会自动绕过 Claude Code 的沙箱，也不会自动帮你改 bash 参数；它真正负责的是：记录状态、备份、diff 和可审计的回滚元数据。
+### 背景与痛点
 
-### 高风险操作前
+用户担心的通常不是命令本身，而是高风险修改之后有没有明确兜底：
 
-- 修改文件前：`python3 ~/.claude/skills/sudo/sudo.py log-modify <path>`
-- 修改完成后：`python3 ~/.claude/skills/sudo/sudo.py finalize-modify <path>`
-- 删除文件前：`python3 ~/.claude/skills/sudo/sudo.py log-delete <path>`
-- 创建文件后：`python3 ~/.claude/skills/sudo/sudo.py log-create <path>`
-- 移动/重命名完成后：`python3 ~/.claude/skills/sudo/sudo.py log-move <src> <dst>`
-- chmod 完成后：`python3 ~/.claude/skills/sudo/sudo.py log-chmod <path> <旧权限八进制> <新权限八进制>`
+- 敏感文件改坏了怎么撤回
+- 系统路径动了之后如何留痕
+- shell history 不足以承担 rollback 的责任
 
-### 使用原则
+### 它能解决什么问题
 
-- `/sudo` 只意味着进入了“显式特权工作流”，不是自动提权。
-- 敏感变更完成后，先看 `/sudo diff`，再决定是否回滚。
-- 如果当前对象已经和记录时不一致，回滚应拒绝执行 destructive 操作。
-- 即使在 `/sudo` 下，`rm -rf` 这类命令仍需要额外确认。
+- 给 `/sudo` 这类高风险修改补上一条可追溯、可回滚的后路
+- 在修改前记录备份，在修改后保留日志与 diff
+- 用对象校验来阻止不安全的 destructive rollback
+
+### 兜底方案
+
+如果改完之后不放心，优先：
+
+1. 看 `/sudo diff`
+2. 查 `/sudo history`
+3. 在对象仍匹配时回滚最近活跃操作
+4. 必要时检查 `~/.claude/sudo-backups/` 和 `~/.claude/sudo-logs/`
+
+它不会自动绕过 Claude Code 的沙箱，也不会自动帮你改 bash 参数；它真正负责的是：记录状态、备份、diff 和可审计的回滚元数据，让用户在进入特权模式时少一些后顾之忧。
